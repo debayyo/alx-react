@@ -1,23 +1,42 @@
-import { toJS } from 'immutable';
-import uiReducer, { initialState } from './uiReducer';
-import { DISPLAY_NOTIFICATION_DRAWER } from '../actions/uiActionTypes';
+import { initialState, uiReducer } from './uiReducers';
+import { SELECT_COURSE } from "../actions/courseActionTypes";
+import { LOGOUT, DISPLAY_NOTIFICATION_DRAWER, LOGIN_SUCCESS, LOGIN_FAILURE } from '../actions/uiActionTypes'
+import { fromJS } from "immutable";
 
-describe('reducer', function () {
-  it('initial state', function () {
-    const state = uiReducer(undefined, {});
-    expect(state.toJS()).toEqual(initialState);
-  });
+const state = fromJS({
+  isNotificationDrawerVisible: false,
+  isUserLoggedIn: true,
+  user: {}
+})
 
-  it('SELECT_COURSE', function () {
-    const state = uiReducer(undefined, { type: 'SELECT_COURSE' });
-    expect(state.toJS()).toEqual(initialState);
-  });
+describe("test uiReducer function", () => {
+  it("(uiReducer function) returns state equals the initial state when no action is passed", ()=>{
+    const currentState = uiReducer(undefined, {})
+    expect(currentState).toEqual(initialState)
+  })
 
-  it('DISPLAY_NOTIFICATION_DRAWER', function () {
-    const state = uiReducer(undefined, { type: DISPLAY_NOTIFICATION_DRAWER });
-    expect(state.toJS()).toEqual({
-      ...initialState,
-      isNotificationDrawerVisible: true,
-    });
-  });
-});
+  it("(uiReducer function) returns state equals the initial state when action SELECT_COURSE is passed", ()=>{
+    const currentState = uiReducer(undefined, { type: SELECT_COURSE })
+    expect(currentState).toEqual(initialState)
+  })
+
+  it("(uiReducer function) returns state equals the initial state when action DISPLAY_NOTIFICATION_DRAWER is passed", ()=>{
+    const currentState = uiReducer(undefined, { type: DISPLAY_NOTIFICATION_DRAWER })
+    const expectedState = { isNotificationDrawerVisible: true, isUserLoggedIn: false, user: {} }
+    expect(currentState.toJS()).toEqual(expectedState)
+  })
+
+  it(`returns state changes isUserLoggedIn property correctly when action LOGIN_FAILURE is passed`, ()=>{
+    const currentState = uiReducer(state, { type: LOGIN_FAILURE })
+    const expectedState = { isNotificationDrawerVisible: false, isUserLoggedIn: false, user: {} }
+    expect(currentState.toJS()).toEqual(expectedState)
+  })
+
+  it(`returns state changes isUserLoggedIn property correctly when action LOGOUT is passed`, () => {
+    const currentState = uiReducer(state, { type: LOGOUT })
+    const expectedState = { isNotificationDrawerVisible: false, isUserLoggedIn: false, user: {} }
+    expect(currentState.toJS()).toEqual(expectedState)
+  })
+  
+  
+})

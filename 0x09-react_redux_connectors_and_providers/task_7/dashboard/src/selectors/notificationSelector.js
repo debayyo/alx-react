@@ -1,19 +1,13 @@
-export const filterTypeSelected = (state) => {
-  return state.get("filter");
-};
-export const getNotifications = (state) => {
-  return state.get("notifications");
-};
-export const getUnreadNotifications = (state) => {
-  const notifications = state.notifications.get("messages");
+import { Map } from 'immutable';
 
-  if (notifications) {
-    const filtered = notifications
-      .valueSeq()
-      .filter((value) => value.get("isRead") === false);
+export function filterTypeSelected(state) {
+  return state.notifications.get('filter');
+}
 
-    return filtered;
-  }
+export function getNotifications(state) {
+  return Map(state.notifications.get('notifications'));
+}
 
-  return notifications;
-};
+export function getUnreadNotifications(state) {
+  return Map(state.notifications.get('messages')).valueSeq().filter((item => !item.isRead));
+}

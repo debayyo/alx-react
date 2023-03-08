@@ -12,7 +12,11 @@ module.exports = {
     hot: true,
     contentBase: path.resolve("./dist"),
     compress: true,
-    port: 8564,
+    port: 8565,
+  },
+  performance: {
+    maxAssetSize: 1000000,
+    maxEntrypointSize: 1000000,
   },
   module: {
     rules: [

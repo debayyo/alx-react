@@ -1,31 +1,22 @@
-import React from "react";
-import { connect } from "react-redux";
-import { getFullYear, getFooterCopy } from "../utils/utils";
-import PropTypes from "prop-types";
+import React, { useContext } from 'react';
+import { connect } from 'react-redux';
+import { getFooterCopy, getFullYear } from '../utils/utils';
 
-export function Footer({ user }) {
+function Footer(props) {
+  const user = props.user;
+
   return (
-    <div className="footer">
-      <p>
-        Copyright {getFullYear()} - {getFooterCopy(true)}
-      </p>
-      {user && <a href="#">Contact us</a>}
+    <div className="App-footer">
+      {(user && (typeof user === 'object' ? Object.keys(user).length !== 0 : false)) && <p><a href="#">Contact us</a></p>}
+      <p>Copyright {getFullYear()} - {getFooterCopy()}</p>
     </div>
-  );
+  )
 }
 
-Footer.defaultProps = {
-  user: null,
-};
-
-Footer.propTypes = {
-  user: PropTypes.object,
-};
-
-const mapStateToProps = (state) => {
+export function mapStateToProps(state) {
   return {
-    user: state.get("user"),
+    user: state.get('user')
   };
-};
+}
 
-export default connect(mapStateToProps, null)(Footer);
+export default connect(mapStateToProps)(Footer);

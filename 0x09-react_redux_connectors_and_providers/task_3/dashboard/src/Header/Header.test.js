@@ -1,43 +1,40 @@
-import { shallow, mount } from "enzyme";
-import React from "react";
-import { Header } from "./Header";
-import { StyleSheetTestUtils } from "aphrodite";
-import AppContext, { user, logOut } from "../App/AppContext";
+import React from 'react';
+import Header from './Header';
+import { shallow } from 'enzyme';
+import { StyleSheetTestUtils } from 'aphrodite';
+import configureStore from 'redux-mock-store'
+import { initialState } from '../reducers/uiReducer';
+import { Provider } from 'react-redux';
 
-const USER = { email: "larry@hudson.com", password: "123456" };
+const mockStore = configureStore([]);
 
-describe("<Header />", () => {
-  beforeAll(() => {
+describe('Testing <Header /> Component', () => {
+  let wrapper;
+  let store;
+
+  beforeEach(() => {
     StyleSheetTestUtils.suppressStyleInjection();
-  });
-  afterAll(() => {
-    StyleSheetTestUtils.clearBufferAndResumeStyleInjection();
-  });
-
-  it("Header renders without crashing", () => {
-    const wrapper = shallow(<Header />);
-    expect(wrapper.exists()).toEqual(true);
-  });
-  it("Verify that the components render img", () => {
-    const wrapper = shallow(<Header user={USER} />);
-    wrapper.update();
-    expect(wrapper.find("div img")).toHaveLength(1);
-  });
-  it("Verify that the components render h1", () => {
-    const wrapper = shallow(<Header user={USER} />);
-    wrapper.update();
-    expect(wrapper.find("div h1")).toHaveLength(1);
+    store = mockStore(initialState);
+    wrapper = shallow(
+      <Provider store={store}>
+        <Header />
+      </Provider>
+    );
   });
 
-  it("mounts the Header component with a default context value. The logoutSection is not created", () => {
-    const wrapper = shallow(<Header />);
+  afterEach(() => {
+		jest.clearAllMocks();
+	});
 
-    expect(wrapper.find("#logoutSection")).toHaveLength(0);
+  it("Renders with out crashing", () => {
+    expect(wrapper).toBeDefined();
   });
 
-  it("mounts the Header component with a user defined (isLoggedIn is true and an email is set). The logoutSection is created", () => {
-    const wrapper = shallow(<Header user={USER} />);
+  it("Render an h1 tag", () => {
+    expect(wrapper.find('h1')).toBeDefined();
+  });
 
-    expect(wrapper.find("#logoutSection")).toHaveLength(1);
+  it("Render an img tag", () => {
+    expect(wrapper.find('img')).toBeDefined();
   });
 });

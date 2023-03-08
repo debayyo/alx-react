@@ -1,20 +1,17 @@
-import { MARK_AS_READ, SET_TYPE_FILTER } from "./notificationActionTypes";
+import * as notifsActionTypes from './notificationActionTypes';
 
-export const markAsAread = (index) => {
+export function markAsAread(index) {
   return {
-    type: MARK_AS_READ,
-    index,
+    type: notifsActionTypes.MARK_AS_READ,
+    index
   };
-};
-
+}
 export const boundMarkAsAread = (index) => dispatch(markAsAread(index));
 
-export const setNotificationFilter = (filter) => {
+export function setNotificationFilter(filter) {
   return {
-    type: SET_TYPE_FILTER,
-    filter,
+    type: notifsActionTypes.SET_TYPE_FILTER,
+    filter
   };
-};
-
-export const boundSetNotificationFilter = (filter) =>
-  dispatch(setNotificationFilter(filter));
+}
+export const boundSetNotificationFilter = (filter) => dispatch(setNotificationFilter(filter));

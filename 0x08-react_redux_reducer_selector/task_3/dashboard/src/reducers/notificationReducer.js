@@ -1,37 +1,33 @@
-import { FETCH_NOTIFICATIONS_SUCCESS, MARK_AS_READ, SET_TYPE_FILTER } from '../actions/notificationActionTypes'
+import { FETCH_NOTIFICATIONS_SUCCESS, MARK_AS_READ } from "../action/notificationActionTypes"
 
-
-export const initialState = {
-    notifications: [],
-    filter: 'DEFAULT'
+const initial_state = {
+    notification : [],
+    filter : "DEFAULT"
 }
 
-export const notificationReducer = (state = initialState, action) => {
-    switch(action.type) {
+export function notificationReducer (state = initial_state, action) {
+    switch(action.type){
         case FETCH_NOTIFICATIONS_SUCCESS:
-            return {
-                ...state,
-                notifications: action.data.map((not) => {
-                    return { ...not, isRead: false };
-                })
-            };
-        case MARK_AS_READ:
-            return {
-                ...state,
-                notifications: state.notifications.map((not) => {
-                    if (action.index === not.id) {
-                        return { ...not, isRead: true }
-                    }
-                    return { ...not }
-                })
-            };
-        case SET_TYPE_FILTER:
-            return {
-                ...state,
-                filter: action.filter
-            };
-        default:
-            break;
+            const init = action.data.notifications.map((value) => {
+                value.isRead = false
+            })
+            return {...state, notification: init}
+        case MARK_AS_READ:{
+            const initial = [...state]
+            return (initial.notification.map((value) =>{
+                if (value.notifications.id == action.index){
+                    value.notification.isRead = true
+                }
+            }))
+        }
+        case SET_TYPE_FILTER:{
+            const initial = [...state]
+            return (initial.notification.map((value) => {
+                    value.filter = action.filter
+
+            }))
+        }
+            
+            
     }
-    return state;
 }

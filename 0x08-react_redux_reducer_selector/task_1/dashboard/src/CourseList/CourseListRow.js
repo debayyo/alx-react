@@ -1,52 +1,66 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { css, StyleSheet } from 'aphrodite';
+import { StyleSheet, css } from "aphrodite";
 
-const styles = StyleSheet.create({
-  rowStyle: {
-    backgroundColor: '#f5f5f5ab'
-  },
-  headerStyle: {
-    backgroundColor: '#deb5b545'
-  },
-  text: {
-    textAlign: 'center',
-    border: '1px solid lightgray'
-  },
-  rowChecked: {
-    backgroundColor: '#e6e4e4'
+const rowStyles = { backgroundColor: "#f5f5f5ab" };
+const headerRowStyles = { backgroundColor: "#deb5b545" };
+
+const rowChecked = {
+  backgroundColor: "#e6e4e4"
+}
+
+
+
+function CourseListRow({ isHeader, textFirstCell, textSecondCell }) {
+  let element;
+
+  const tableItemStyle = css(
+    isHeader ? styles.CourseListTh : styles.CourseListTd
+  );
+  const [checked, setchecked] = useState(false)
+
+  const rowCheckedChange = () => {
+    setchecked(() => {
+      !checked
+    })
+
   }
-})
-
-export default function CourseListRow({
-  isHeader,
-  textFirstCell,
-  textSecondCell,
-}) {
-
-  if (isHeader) {
+  if (isHeader === true) {
+    //
     if (textSecondCell === null) {
-      return (
-        <tr className={css(styles.headerStyle)}>
-          <th colSpan="2" className={css(styles.text)}>{textFirstCell}</th>
-        </tr>
+      element = (
+        <th colSpan="2" className={css(styles.CourseListThSpan2)}>
+          {textFirstCell}
+        </th>
       );
     } else {
-      return (
-        <tr className={css(styles.headerStyle)}>
-          <th className={css(styles.text)}>{textFirstCell}</th>
-          <th className={css(styles.text)}>{textSecondCell}</th>
-        </tr>
+      element = (
+        <>
+          <th className={tableItemStyle}>{textFirstCell}</th>
+          <th className={tableItemStyle}>{textSecondCell}</th>
+        </>
       );
     }
-  } else {
-    return (
-      <tr className={css(styles.rowStyle)}>
-        <td className={css(styles.text)}>{textFirstCell}</td>
-        <td className={css(styles.text)}>{textSecondCell}</td>
-      </tr>
+    //
+  } else if (isHeader === false) {
+    element = (
+      <div >
+        <td className={tableItemStyle}>
+          <input type="checkbox" onClick={rowCheckedChange}>
+          </input>
+          {textFirstCell}
+        </td>
+        <td className={tableItemStyle}>{textSecondCell}</td>
+      </div>
     );
   }
+
+  let isHeaderStyle;
+
+  if (isHeader) isHeaderStyle = headerRowStyles;
+  else isHeaderStyle = rowStyles;
+
+  return <tr style={checked ? rowChecked : isHeaderStyle}>{element}</tr>;
 }
 
 CourseListRow.defaultProps = {
@@ -57,5 +71,28 @@ CourseListRow.defaultProps = {
 CourseListRow.propTypes = {
   isHeader: PropTypes.bool,
   textFirstCell: PropTypes.string.isRequired,
-  textSecondCell: PropTypes.oneOfType([PropTypes.string, PropTypes.number]) 
+  textSecondCell: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
+
+const cssVars = {
+  borderTableColor: "rgb(170, 170, 170);",
+};
+
+const styles = StyleSheet.create({
+  CourseListTh: {
+    borderTop: `1px solid ${cssVars.borderTableColor}`,
+    borderBottom: `1px solid ${cssVars.borderTableColor}`,
+    textAlign: "left",
+    fontSize: "18px",
+  },
+
+  CourseListThSpan2: {
+    textAlign: "center",
+  },
+
+  CourseListTd: {
+    textAlign: "left",
+  },
+});
+
+export default CourseListRow;

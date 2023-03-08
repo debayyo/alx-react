@@ -1,11 +1,12 @@
-import { createSelector } from "reselect";
+import { Map } from 'immutable';
 
-export const filterTypeSelected = (state) => {
-  return state.get("filter");
-};
-export const getNotifications = (state) => {
-  return state.get("notifications");
-};
+export function filterTypeSelected(state) {
+  return state.notifications.get('filter');
+}
+
+export function getNotifications(state) {
+  return Map(state.notifications.get('notifications'));
+}
 
 const getNotificationsSelector = (state) => state.notifications;
 

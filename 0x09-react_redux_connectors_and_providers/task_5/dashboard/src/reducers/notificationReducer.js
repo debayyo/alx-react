@@ -1,47 +1,34 @@
-import { Map, fromJS } from "immutable";
+import * as actions from '../actions/notificationActionTypes';
+import { Map, setIn, set } from 'immutable';
+import { notificationsNormalizer } from '../schema/notifications';
 
-import {
-  FETCH_NOTIFICATIONS_SUCCESS,
-  MARK_AS_READ,
-  SET_TYPE_FILTER,
-  SET_LOADING_STATE,
-} from "../actions/notificationActionTypes";
-
-export const initialNotificationState = {
+export const initialNotificationState= Map({
   notifications: {},
-  filter: "DEFAULT",
-  loading: false,
-};
+  filter: actions.NotificationTypeFilters.DEFAULT,
+  loading: false
+});
 
-import notificationsNormalizer from "../schema/notifications";
+export function notificationReducer(state=Map(initialNotificationState), action={type: null}) {
+  switch(action.type) {
 
-const notificationReducer = (state = Map(initialNotificationState), action) => {
-  switch (action.type) {
-    case FETCH_NOTIFICATIONS_SUCCESS:
-      const normalizedData = notificationsNormalizer(action.data);
-
-      Object.keys(normalizedData.notifications).map((key) => {
-        normalizedData.notifications[key].isRead = false;
+    case actions.FETCH_NOTIFICATIONS_SUCCESS:
+      const normData = notificationsNormalizer(action.data);
+      Object.keys(normData.notifications).map((key) => {
+        normData.notifications[key].isRead = false;
       });
+      return state.mergeDeep(normData);
 
-      return state.mergeDeep(normalizedData);
+    case actions.MARK_AS_READ:
+      return setIn(state, ['notifications', String(action.index), 'isRead'], true);
 
-    case MARK_AS_READ:
-      return state.setIn(
-        ["notifications", String(action.index), "isRead"],
-        true
-      );
+    case actions.SET_TYPE_FILTER:
+      return set(state, 'filter', action.filter);
 
-    case SET_TYPE_FILTER:
-      return state.set("filter", action.filter);
-
-    case SET_LOADING_STATE:
-      return state.set("loading", action.loading);
-
+    case actions.SET_LOADING_STATE:
+      return set(state, 'loading', action.loading);
+    
     default:
-      break;
-  }
-  return state;
-};
+      return state;
 
-export default notificationReducer;
+  }
+}

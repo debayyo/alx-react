@@ -1,103 +1,65 @@
-import React, { Component } from "react";
-import { StyleSheet, css } from "aphrodite";
+import React, {useState, useEffect} from 'react';
+import { StyleSheet, css } from 'aphrodite';
+import PropTypes from 'prop-types';
 
-class Login extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      email: "",
-      password: "",
-      enableSubmit: false,
-    };
-    this.handleLoginSubmit = this.handleLoginSubmit.bind(this);
-    this.handleChangeEmail = this.handleChangeEmail.bind(this);
-    this.handleChangePassword = this.handleChangePassword.bind(this);
-  }
+function Login(props) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [enableSubmit, setEnableSubmit] = useState(false);
 
-  handleLoginSubmit(event) {
-    event.preventDefault();
+  const handleLoginSubmit = (e) => {
+    e.preventDefault();
+    props.logIn(email, password);
+  };
+  const handleChangeEmail = (e) => {
+    setEmail(e.target.value);
+  };
+  const handleChangePassword = (e) => {
+    setPassword(e.target.value);
+  };
 
-    const { email, password } = this.state;
+  useEffect(() => {
+    if (email != '' && password != '') {
+      setEnableSubmit(true);
+    } else {
+      if (enableSubmit != false) {
+        setEnableSubmit(false);
+      }
+    }
+  }, [email, password]);
 
-    this.props.logIn(email, password);
-  }
-
-  handleChangeEmail(event) {
-    const { value } = event.target;
-    const { password } = this.state;
-
-    if (value !== "" && password !== "") this.setState({ enableSubmit: true });
-    else this.setState({ enableSubmit: false });
-
-    this.setState({ email: event.target.value });
-  }
-
-  handleChangePassword(event) {
-    const { value } = event.target;
-    const { email } = this.state;
-
-    if (email !== "" && value !== "") this.setState({ enableSubmit: true });
-    else this.setState({ enableSubmit: false });
-
-    this.setState({ password: event.target.value });
-  }
-
-  render() {
-    return (
-      <div className={css(styles.login)}>
+  return (
+    <React.Fragment>
+      <div className={css(loginStyles.appBody)}>
         <p>Login to access the full dashboard</p>
-        <form action="" onSubmit={this.handleLoginSubmit}>
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            className={css(styles.loginInput)}
-            value={this.state.email}
-            onChange={this.handleChangeEmail}
-          />
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            className={css(styles.loginInput)}
-            value={this.state.password}
-            onChange={this.handleChangePassword}
-          />
-          <input type="submit" disabled={!this.state.enableSubmit} />
+        <form onSubmit={handleLoginSubmit} >
+          <label htmlFor="email">Email: </label>
+          <input type="email" id="email" name="email" className={loginStyles.inputs} value={email} onChange={handleChangeEmail} />
+          <label htmlFor="password">Password: </label>
+          <input type="password" id="password" name="password" className={loginStyles.inputs} value={password} onChange={handleChangePassword} />
+          <input type="submit" value="Ok" disabled={!enableSubmit}/>
         </form>
       </div>
-    );
-  }
+    </React.Fragment>
+  )
 }
 
-const screenSize = {
-  small: "@media screen and (max-width: 900px)",
+const loginStyles = StyleSheet.create({
+	appBody: {
+    padding: '36px 24px',
+		'@media (max-width: 900px)': {
+      display: 'flex',
+      flexDirection: 'column'
+    }
+	},
+
+	inputs: {
+		margin: '0 16px 0 8px'
+	}
+})
+
+Login.propTypes = {
+  logIn: PropTypes.func
 };
-
-const styles = StyleSheet.create({
-  login: {
-    margin: "50px",
-    flexGrow: 1,
-    [screenSize.small]: {
-      marginTop: "10px",
-      marginLeft: 0,
-      marginRight: 0,
-      marginBottom: 0,
-    },
-  },
-
-  loginInput: {
-    marginLeft: "10px",
-    marginRight: "20px",
-    [screenSize.small]: {
-      display: "block",
-      marginLeft: 0,
-      marginTop: "10px",
-      marginBottom: "10px",
-    },
-  },
-});
 
 export default Login;

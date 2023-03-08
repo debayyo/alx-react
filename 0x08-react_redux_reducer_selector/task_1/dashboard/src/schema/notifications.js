@@ -1,33 +1,27 @@
-import * as notificationItem from "../../notifications.json";
+import * as notifi from '../notification.json'
 import { normalize, schema } from 'normalizr';
 
-// Define a users schema
-const user = new schema.Entity('users');
 
-// Define a message schema
-const message = new schema.Entity('messages', {}, {
-  idAttribute: 'guid'
+
+
+const user = new schema.Entity("users")
+
+const message = new schema.Entity("messages", {},{
+    idAttribute: "guid"
 });
 
-// Define a notification schema
-const notification = new schema.Entity('notifications', {
-  author: user,
-  context: message
-});
+const notification = new schema.Entity("notifications", {
+    author: user,
+    context: message
+})
 
-export const normalizedData = normalize(notificationItem.default, [notification])
+export const normalizedData = normalize(notifi.default, [notification])
 
-export const getAllNotificationsByUser = (userId) => {
-
-  const entityNotification = normalizedData.entities.notifications;
-  const entityMessage = normalizedData.entities.messages;
-  const data = [];
-
-  for (let item in entityNotification) {
-    if (entityNotification[item].author === userId) {
-      const contextMessage = entityNotification[item].context;
-      data.push(entityMessage[contextMessage])
-    }
+export const getAllNotificationsByUser = (userId) =>{
+    let userNotifs = []
+    const notifications = normalizedData.entities.notifications
+    const messages = normalizedData.entities.messages
+    const NotifIdList = normalizedData.result.filter((notifId)=>notifications[notifId].author == userId)
+    NotifIdList.forEach((id)=>userNotifs.push(messages[notifications[id].context]))
+    return userNotifs
   }
-  return data;
-};
